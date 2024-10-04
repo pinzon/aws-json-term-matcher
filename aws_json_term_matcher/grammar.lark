@@ -3,7 +3,7 @@ start: "{" expression "}"
 expression: "(" expression ")" -> paren
           | expression "&&" expression -> and_op
           | expression "||" expression -> or_op
-          | BOOL
+          |
 
 BOOL: "true" | "false"
 %ignore /\s+/

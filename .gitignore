@@ -2,3 +2,6 @@
 __pycache__
 .idea
 .vscode
+aws_json_term_matcher.egg-info
+.ruff_cache
+build
