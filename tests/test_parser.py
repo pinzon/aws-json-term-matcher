@@ -25,6 +25,7 @@ test_cases = [
 ]
 
 
+# TODO add tests that assert the structure of the generated tree
 @pytest.mark.parametrize("filter_definition", test_cases)
 def test_parse_filter(filter_definition):
     assert parse_filter(filter_definition)
