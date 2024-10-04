@@ -1,0 +1,22 @@
+[project]
+name = "aws-json-term-matcher"
+version = "0.1.0"
+authors = [
+    { name = 'Cristopher Pinzon', email = 'cristopher.pinzon@localstack.cloud' }
+]
+description = "The core library and runtime of LocalStack"
+requires-python = ">=3.8"
+dependencies=[
+    "lark"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "black"
+]
+
+test = [
+    "pytest"
+]

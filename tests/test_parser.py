@@ -1,10 +1,10 @@
 import pytest
 from aws_json_term_matcher.parser import parse_filter
 
+# This test case a
 test_cases = [
     # simple case
     '{ $.eventType = "UpdateTrail" }',
-
     # numeric values
     "{ $.bandwidth > 75 }",
     "{ $.latency < 50 }",
@@ -14,22 +14,17 @@ test_cases = [
     "{ $.errorCode != 500 }",
     "{ $.number[0] = 1e-3 }",
     "{ $.number[0] != 1e+3 }",
-
     # ip
     "{ $.sourceIPAddress != 123.123.* }",
-
     # array
     '{ $.arrayKey[0] = "value"}',
-
     # grouped and logic operation
     '{( $.eventType = "UpdateTrail") ||  (($.eventType = "UpdateTrail2") && ($.eventType[2] = "uts")) }',
-
     # real life sample with arn
     '{($.detail-type ="ShopUnavailable") && (($.resources[1] = "arn:aws:states:us-east-1:111222333444:execution:OrderProcessorWorkflow:d57d4769-72fd") || ($.resources[0] = "arn:aws:states:us-east-1:111222333444:stateMachine:OrderProcessorWorkflow"))}',
-    ]
+]
 
 
-@pytest.mark.parametrize("filter", test_cases)
-def test_parse_filter(filter):
-    result = parse_filter(filter)
-    assert result is not None
+@pytest.mark.parametrize("filter_definition", test_cases)
+def test_parse_filter(filter_definition):
+    assert parse_filter(filter_definition)
