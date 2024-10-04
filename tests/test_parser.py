@@ -1,5 +1,5 @@
 import pytest
-from aws_json_term_matcher.parser import parse_filter
+from aws_json_term_matcher.matcher import parse_filter
 
 # This test case a
 test_cases = [
