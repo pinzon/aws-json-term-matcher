@@ -44,9 +44,6 @@ class FilterEvaluator(Transformer):
 
         return None  # Fallback if the structure isn't as expected
 
-    def paren(self, expr):
-        return expr.children[0].children[0].value
-
     def and_op(self, left, right):
         value_left = left.children[0]
         value_right = right.children[0]

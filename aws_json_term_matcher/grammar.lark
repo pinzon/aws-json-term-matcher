@@ -1,6 +1,6 @@
 start: "{" expression "}"
 
-expression: "(" expression ")" -> paren
+expression: "(" expression ")"
           | expression "&&" expression -> and_op
           | expression "||" expression -> or_op
           | comparison

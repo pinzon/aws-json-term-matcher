@@ -51,10 +51,10 @@ filters = [
     ("{ $.bandwidth = 80 || $.refreshRate >= 60}", True),
     ("{ $.bandwidth != 80 || $.refreshRate >= 60}", True),
     ("{ $.bandwidth != 80 || $.refreshRate != 60}", False),
-    # Grouped
-    ("{ ($.bandwidth = 80) || ($.refreshRate >= 60})", True),
-    ("{ ($.bandwidth = 80 || $.refreshRate >= 60})", True),
-    ("{ $.bandwidth = 80 && ($.refreshRate >= 60})", True),
+    # # Grouped
+    ("{ ($.bandwidth = 80) || ($.refreshRate >= 60)}", True),
+    ("{ ($.bandwidth = 80 || $.refreshRate >= 60)}", True),
+    ("{ $.bandwidth = 80 && ($.refreshRate >= 60)}", True),
 ]
 
 
