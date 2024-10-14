@@ -1,5 +1,29 @@
-from lark import Lark, Transformer, v_args, Tree, Token
 import os
+
+from lark import Lark, Transformer, v_args, Tree, Token
+
+
+class IpRange:
+    def __init__(self, ip_range: str):
+        self.range = ip_range
+
+    def ip_is_in_range(self, ip: str | None) -> bool:
+        if ip is None:
+            return False
+        if len(ip) == 0:
+            return False
+
+        ip_parts = ip.split(".")
+        range_parts = self.range.split(".")
+
+        # Compare each part of the IP to the range
+        for i in range(len(range_parts)):
+            if range_parts[i] == "*":
+                continue  # Wildcard matches any value
+            if i >= len(ip_parts) or ip_parts[i] != range_parts[i]:
+                return False
+        return True
+
 
 # Transformer to evaluate the parsed filter
 @v_args(inline=True)
@@ -7,14 +31,31 @@ class FilterEvaluator(Transformer):
     def __init__(self, data):
         self.data = data
 
+    def start(self, expr):
+        if isinstance(expr, bool):
+            return expr
+        elif hasattr(expr, "children") and len(expr.children) > 0:
+            child = expr.children[0]
+            if isinstance(child, bool):
+                return child
+
+            if hasattr(child, "children") and len(child.children) > 0:
+                return child.children[0]
+
+        return None  # Fallback if the structure isn't as expected
+
     def paren(self, expr):
-        return expr
+        return expr.children[0].children[0].value
 
     def and_op(self, left, right):
-        return left and right
+        value_left = left.children[0]
+        value_right = right.children[0]
+        return value_left and value_right
 
-    def or_op(self, left, right):
-        return left or right
+    def or_op(self, left: Tree, right: Tree):
+        value_left = left.children[0]
+        value_right = right.children[0]
+        return value_left or value_right
 
     def comparison(self, entity, comparator, value):
         entity_value = self.resolve_entity(entity)
@@ -42,7 +83,7 @@ class FilterEvaluator(Transformer):
             elif node.data == "index_access":
                 # Handles indices like $[0] or $.attribute[1]
                 attr = node.children[0].children[0].value
-                keys.append(attr)
+                keys.append(attr.strip("\"'"))
                 index = node.children[
                     1
                 ].value  # The index is the second child in the rule
@@ -70,6 +111,9 @@ class FilterEvaluator(Transformer):
     def compare(self, entity_value, comparator, value):
         comparator_value = comparator.value
 
+        if isinstance(value, IpRange):
+            return value.ip_is_in_range(entity_value)
+
         if comparator_value == "=":
             return entity_value == value
         elif comparator_value == "!=":
@@ -88,6 +132,9 @@ class FilterEvaluator(Transformer):
         # Returns the value as-is (for STRING, NUMBER, etc.)
         if value.type in ["SCIENTIFIC", "NUMBER"]:
             return float(value.value)
+
+        if value.type == "WILDCARD_IP":
+            return IpRange(value.value)
 
         return value.value.strip("\"'")
 
@@ -110,4 +157,4 @@ def match(obj: dict, filter: str):
     evaluator = FilterEvaluator(obj)
 
     result = evaluator.transform(tree)
-    return result.children[0].children[0]
+    return result

@@ -41,9 +41,9 @@ filters = [
     ('{ $["eventType"] != "UpdateTrail2" }', True),
     ('{ $["eventTypeList"][2] = "uts" }', True),
     # Ip value filter
-    ("{ $.sourceIpAddress = 123.* }", True),
-    ("{ $.sourceIpAddress = 10.0.1.0 }", False),
-    ("{ $.sourceIpAddress != 10.0.1.0 }", False),
+    ("{ $.sourceIPAddress = 123.* }", True),
+    ("{ $.sourceIPAddress = 10.0.1.0 }", False),
+    ("{ $.sourceIPAddress != 10.0.1.0 }", True),
     # AND op
     ("{ $.bandwidth = 80 && $.refreshRate >= 60}", True),
     ("{ $.bandwidth != 80 && $.refreshRate >= 60}", False),
