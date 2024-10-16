@@ -1,9 +1,33 @@
 start: "{" expression "}"
 
-expression: "(" expression ")" -> paren
+expression: "(" expression ")"
           | expression "&&" expression -> and_op
           | expression "||" expression -> or_op
-          | BOOL
+          | comparison
 
-BOOL: "true" | "false"
-%ignore /\s+/
+comparison: entity COMPARATOR value
+COMPARATOR: "=" | "!=" | ">" | ">=" | "<" | "<="
+
+entity: "$" selection
+selection: (attribute_access | index_access)+
+attribute_access: "." NAME | "[" ESCAPED_STRING "]"
+index_access: "[" INT "]"
+
+value: ESCAPED_STRING | NUMBER | SCIENTIFIC | IP | WILDCARD_IP
+
+
+NUMBER: INT | FLOAT
+SCIENTIFIC: SIGNED_INT "e" SIGNED_INT | SIGNED_FLOAT "e" SIGNED_INT
+IP: INT "." INT "." INT "." INT
+WILDCARD_IP: INT "." "*" | INT "." INT "." "*" | INT "." INT "." INT "." "*"
+
+NAME: /[a-zA-Z_][a-zA-Z0-9_-]*/
+INT: /[0-9]+/
+FLOAT: /[0-9]+\.[0-9]+/
+SIGNED_INT: INT | "+"INT | "-"INT
+SIGNED_FLOAT: FLOAT | "+"FLOAT | "-"FLOAT
+
+
+%import common.WS
+%import common.ESCAPED_STRING
+%ignore WS
