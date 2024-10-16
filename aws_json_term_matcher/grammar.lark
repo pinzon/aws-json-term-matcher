@@ -9,9 +9,9 @@ comparison: entity COMPARATOR value
 COMPARATOR: "=" | "!=" | ">" | ">=" | "<" | "<="
 
 entity: "$" selection
-selection: attribute_access | index_access | selection "." selection
+selection: (attribute_access | index_access)+
 attribute_access: "." NAME | "[" ESCAPED_STRING "]"
-index_access: attribute_access"[" INT "]" | "[" INT "]"
+index_access: "[" INT "]"
 
 value: ESCAPED_STRING | NUMBER | SCIENTIFIC | IP | WILDCARD_IP
 

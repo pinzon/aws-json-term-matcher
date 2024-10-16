@@ -81,12 +81,7 @@ class FilterEvaluator(Transformer):
                     )  # Attribute accessed like ["attr"]
 
             elif node.data == "index_access":
-                # Handles indices like $[0] or $.attribute[1]
-                attr = node.children[0].children[0].value
-                keys.append(attr.strip("\"'"))
-                index = node.children[
-                    1
-                ].value  # The index is the second child in the rule
+                index = node.children[0].value
                 keys.append(index)
 
             elif node.data == "selection":

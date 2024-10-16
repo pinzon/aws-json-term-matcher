@@ -25,6 +25,7 @@ test_cases = [
     '{( $.eventType = "UpdateTrail") ||  (($.eventType = "UpdateTrail2") && ($.eventType[2] = "uts")) }',
     # real life sample with arn
     '{($.detail-type ="ShopUnavailable") && (($.resources[1] = "arn:aws:states:us-east-1:111222333444:execution:OrderProcessorWorkflow:d57d4769-72fd") || ($.resources[0] = "arn:aws:states:us-east-1:111222333444:stateMachine:OrderProcessorWorkflow"))}',
+    '{ $.number[0][1]["test"].test = 1e-3 }',
 ]
 
 
@@ -54,7 +55,5 @@ error_cases = [
 
 @pytest.mark.parametrize("filter_definition", error_cases)
 def test_error_message(filter_definition):
-    with pytest.raises(ParsingError) as e:
+    with pytest.raises(ParsingError):
         parse_filter(filter_definition)
-
-    assert str(e)
