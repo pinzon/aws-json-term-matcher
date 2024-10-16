@@ -51,10 +51,14 @@ filters = [
     ("{ $.bandwidth = 80 || $.refreshRate >= 60}", True),
     ("{ $.bandwidth != 80 || $.refreshRate >= 60}", True),
     ("{ $.bandwidth != 80 || $.refreshRate != 60}", False),
-    # # Grouped
+    # Grouped
     ("{ ($.bandwidth = 80) || ($.refreshRate >= 60)}", True),
     ("{ ($.bandwidth = 80 || $.refreshRate >= 60)}", True),
     ("{ $.bandwidth = 80 && ($.refreshRate >= 60)}", True),
+    # Non existent attributes
+    ("{ $.non-existent = 80 }", False),
+    ('{ $["non-existent"] = 80 }', False),
+    ('{ $["number"][4]= 80 }', False),
 ]
 
 
