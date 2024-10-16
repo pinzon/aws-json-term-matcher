@@ -1,5 +1,8 @@
 import pytest
+
+from aws_json_term_matcher.exceptions import ParsingError
 from aws_json_term_matcher.matcher import parse_filter
+
 
 # This test case a
 test_cases = [
@@ -25,7 +28,33 @@ test_cases = [
 ]
 
 
-# TODO add tests that assert the structure of the generated tree
 @pytest.mark.parametrize("filter_definition", test_cases)
 def test_parse_filter(filter_definition):
     assert parse_filter(filter_definition)
+
+
+error_cases = [
+    "{}",
+    "{",
+    "{)",
+    "{}",
+    "{)}",
+    '{ .attribute = "a"}',
+    '{ $.attribute * "a"}',
+    "{$[asdf] = 1}",
+    "{$[0.1] = 1}",
+    "$.attribute = 1",
+    "{$.attribute = 1 &}",
+    "{ || $.attribute = 1 }",
+    "{($.attribute = 1 }",
+    "{$.attribute = 1) }",
+    "{($.attribute = 1) && () }",
+]
+
+
+@pytest.mark.parametrize("filter_definition", error_cases)
+def test_error_message(filter_definition):
+    with pytest.raises(ParsingError) as e:
+        parse_filter(filter_definition)
+
+    assert str(e)

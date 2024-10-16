@@ -1,6 +1,9 @@
 import os
 
 from lark import Lark, Transformer, v_args, Tree, Token
+from lark.exceptions import UnexpectedCharacters, UnexpectedInput, UnexpectedToken
+
+from aws_json_term_matcher.exceptions import ParsingError, MatchingError
 
 
 class IpRange:
@@ -98,12 +101,15 @@ class FilterEvaluator(Transformer):
         _resolve(entity)
 
         value = self.data
-        for key in keys:
-            if key.isdigit():
-                value = value[int(key)]
-            else:
-                value = value.get(key, None)
-        return value
+        try:
+            for key in keys:
+                if key.isdigit():
+                    value = value[int(key)]
+                else:
+                    value = value.get(key, None)
+            return value
+        except IndexError:
+            return None
 
     def compare(self, entity_value, comparator, value):
         comparator_value = comparator.value
@@ -146,12 +152,17 @@ def load_parser():
 
 def parse_filter(expression):
     parser = load_parser()
-    return parser.parse(expression)
+    try:
+        return parser.parse(expression)
+    except (UnexpectedCharacters, UnexpectedInput, UnexpectedToken) as e:
+        raise ParsingError(str(e))
 
 
 def match(obj: dict, filter: str):
     tree = parse_filter(filter)
     evaluator = FilterEvaluator(obj)
 
-    result = evaluator.transform(tree)
-    return result
+    try:
+        return evaluator.transform(tree)
+    except Exception as e:
+        raise MatchingError(str(e))
