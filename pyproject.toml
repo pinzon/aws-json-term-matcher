@@ -5,7 +5,7 @@ authors = [
     { name = 'Cristopher Pinzon', email = 'cristopher.pinzon@localstack.cloud' }
 ]
 description = 'A Python library for advanced filtering and matching of AWS JSON logs, designed to simplify log parsing and enhance filtering capabilities.'
-readme = { file = ["README.md"], content-type = "text/markdown"}
+readme = { file ="README.md", content-type = "text/markdown"}
 license = {file = "LICENSE"}
 
 requires-python = ">=3.8"
